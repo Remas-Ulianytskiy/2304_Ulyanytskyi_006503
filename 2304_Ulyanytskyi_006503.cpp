@@ -102,9 +102,7 @@ int main()
         cout << char_array;
 
         if (!char_array.get_invalid_chars().empty())
-        {
             cout << "\nInvalid chars from input: " << char_array.get_invalid_chars();
-        }
 
         cout << endl << endl;
     }    
