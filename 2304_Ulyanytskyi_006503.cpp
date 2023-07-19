@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <string>
 #include <Windows.h>
 #include "Array.h"
 #include "Vector.h"
@@ -8,8 +9,8 @@ using namespace std;
 template <typename type>
 type get_user_input()
 {
-    type   input;
-    cin >> input;
+    type input;
+    getline(cin, input);
     return input;
 }
 
@@ -19,8 +20,25 @@ class Special_Char_Array : public Array<T>
 private:
     const string allowed_chars = "‘₴1234567890-=!\"No;%:?()_+/*\\,.";
     const int allowed_chars_size = allowed_chars.length();
+    string invalid_chars;
 
-    bool check_char(T elem) {
+    string remove_invalid_chars(const string& input)
+    {
+        string result;
+
+        for (char ch : input)
+        {
+            if (check_char(ch))
+                result += ch;
+            else if (!check_char(ch) && ch != ' ')
+                invalid_chars += ch;
+        }
+
+        return result;
+    }
+
+    bool check_char(T elem)
+    {
         for (int i = 0; i < allowed_chars_size; ++i)
         {
             if (elem == allowed_chars[i])
@@ -30,22 +48,20 @@ private:
     }
 
 public:
-    void display_allowe_chars()
+    void display_allowed_chars()
     {
-        cout << "Allowed list of characters: " << allowed_chars;
+        cout << "Allowed list of characters: " << allowed_chars << endl;
     }
 
-    void add_char(T elem)
+    string get_invalid_chars() { return invalid_chars; }
+
+    void add_chars(const string& input)
     {
-        if (check_char(elem))
-        {
-            Array<T>::addElem(elem);
-        }
-        else
-        {
-            cout << "Invalid character: " << elem << endl;
-        }
-    }
+        string filtered_input = remove_invalid_chars(input);
+
+        for (char ch : filtered_input)
+            Array<T>::addElem(ch);
+    }    
 };
 
 int main()
@@ -53,28 +69,22 @@ int main()
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
 
-    char user_input;
-    Special_Char_Array<char> charArray;
+    string user_input;
+    Special_Char_Array<char> char_array;
 
     cout << "Enter characters from the allowed list\n";
-    
-    charArray.display_allowe_chars();
-    cout << "\nEnter E for display array and exit\n";
+    char_array.display_allowed_chars();
 
-    while (true)
+    cout << "Enter: ";
+    user_input = get_user_input<string>();
+
+    char_array.add_chars(user_input);
+
+    cout << char_array;
+
+    if (!char_array.get_invalid_chars().empty())
     {
-        cout << "Enter: ";
-        user_input = get_user_input<char>();
-
-        if (user_input == 'E' || user_input == 'e')
-        {
-            cout << charArray << endl;
-            break;
-        }
-        else
-        {
-            charArray.add_char(user_input);
-        }
+        cout << "\nInvalid chars from input: " << char_array.get_invalid_chars();
     }
 
     return 0;
