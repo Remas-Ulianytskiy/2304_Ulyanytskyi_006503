@@ -61,7 +61,16 @@ public:
 
         for (char ch : filtered_input)
             Array<T>::addElem(ch);
-    }    
+    }
+
+    void clear()
+    {
+        invalid_chars.clear();
+        if (Array<T>::pa)
+            delete[] Array<T>::pa;
+        Array<T>::pa = nullptr;
+        Array<T>::size = 0;
+    }
 };
 
 int main()
@@ -74,18 +83,31 @@ int main()
 
     cout << "Enter characters from the allowed list\n";
     char_array.display_allowed_chars();
+    cout << "Enter \"Exit\" or \"exit\" for exit from app\n";
 
-    cout << "Enter: ";
-    user_input = get_user_input<string>();
-
-    char_array.add_chars(user_input);
-
-    cout << char_array;
-
-    if (!char_array.get_invalid_chars().empty())
+    while (true)
     {
-        cout << "\nInvalid chars from input: " << char_array.get_invalid_chars();
-    }
+        char_array.clear();
+
+        cout << "Enter: ";
+        user_input = get_user_input<string>();
+
+        if (user_input == "Exit" || user_input == "exit")
+        {
+            cout << "Exit from app!";
+            break;
+        }
+
+        char_array.add_chars(user_input);
+        cout << char_array;
+
+        if (!char_array.get_invalid_chars().empty())
+        {
+            cout << "\nInvalid chars from input: " << char_array.get_invalid_chars();
+        }
+
+        cout << endl << endl;
+    }    
 
     return 0;
 }

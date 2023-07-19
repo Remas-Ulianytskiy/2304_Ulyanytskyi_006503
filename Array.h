@@ -22,7 +22,7 @@ template <typename T> class Array
         return in;
     }
 
-private:
+protected:
     T* pa;
     int  size;
 
